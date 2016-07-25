@@ -1,0 +1,24 @@
+{
+  "name": "pr-teams",
+  "version": "0.1.0",
+  "description": "Web service to generate pull request reviewer teams",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ianmstew/pr-teams.git"
+  },
+  "author": "Ian Stewart",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ianmstew/pr-teams/issues"
+  },
+  "homepage": "https://github.com/ianmstew/pr-teams#readme"
+}
