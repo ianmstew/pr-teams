@@ -4,6 +4,12 @@ var prTeams = require('./lib/pr-teams');
 var app = express();
 
 var TEXT = 'text/plain';
+var DOCUMENTATION_LINK = (
+  '<!DOCTYPE html>' +
+  '<title>pr-teams</title>' +
+  '<a href="https://github.com/ianmstew/pr-teams/blob/master/README.md">Documentation</a>'
+);
+
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -15,6 +21,13 @@ var USAGE =
   '  where each semicolon-separate group of comma-separated devs is a dev team.\n\n'
   'Example: 4:1:brett,stef,steve;ian,max;zach,josh';
 
+app.get('/', function (req, res) {
+  res.send(DOCUMENTATION_LINK);
+});
+
+app.get('/generate-teams', function (req, res) {
+  res.send(DOCUMENTATION_LINK);
+});
 
 app.post('/generate-teams', function (req, res) {
   if (req.body.text === undefined || typeof req.body.text !== 'string') {
