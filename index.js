@@ -11,8 +11,8 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 var USAGE =
-  'Usage: <PR team size>:<Min outsiders>:<developer team>[;<developer team>]*\n' +
-  '  where <developer team> = <developer>[,<developer>]*\n' +
+  'Arguments: <PR team size>:<Min outsiders>:<dev>[,<dev>]*[;<dev>[,<dev>]]\n' +
+  '  where each semicolon-separate group of comma-separated devs is a dev team.\n\n'
   'Example: 4:1:brett,stef,steve;ian,max;zach,josh';
 
 
