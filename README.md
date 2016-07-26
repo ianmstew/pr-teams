@@ -26,13 +26,12 @@ This service is intended for custom Slack "slash integration" and generates PR r
 ##### Arguments
 
 ```
-<PR team size>:<Min outsiders>:<dev>[,<dev>]*[;<dev>[,<dev>]*]
+<dev>[,<dev>]*[;<dev>[,<dev>]*]:<PR team size>:<Min outsiders>
 ```
 
-* `PR team size` Total size of the PR review team, including the author
-* `Min outsiders` The minimum number of reviewers from outsdie the author's dev team that should be reviewers, if available.
-* Each `dev` should be a developer's name
-* Each semicolon-separated group of comma-separated devs is a dev team.
+* `PR team size` Optional: Defaults to 4. Total size of the PR review team, including the author.
+* `Min outsiders` Optional: Defaults to 1. The minimum number of reviewers from outsdie the author's dev team that should be reviewers, if available.
+* `dev` A developer's name. Each semicolon-separated group of comma-separated devs is a dev team.
 
 #### Example
 

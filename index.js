@@ -10,6 +10,8 @@ var DOCUMENTATION_LINK = (
   '<a href="https://github.com/ianmstew/pr-teams/blob/master/README.md">Documentation</a>'
 );
 
+var DEFAULT_PR_TEAM_SIZE = 4;
+var DEAFAULT_MIN_OUTSIDERS = 1;
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -19,7 +21,7 @@ app.use(bodyParser.json());
 var USAGE =
   'Arguments: <PR team size>:<Min outsiders>:<dev>[,<dev>]*[;<dev>[,<dev>]]\n' +
   '  where each semicolon-separate group of comma-separated devs is a dev team.\n\n'
-  'Example: 4:1:brett,stef,steve;ian,max;zach,josh';
+  'Example: brett,stef,steve;ian,max;zach,josh:4:1';
 
 app.get('/', function (req, res) {
   res.send(DOCUMENTATION_LINK);
@@ -30,40 +32,40 @@ app.get('/generate-teams', function (req, res) {
 });
 
 app.post('/generate-teams', function (req, res) {
-  if (req.body.text === undefined || typeof req.body.text !== 'string') {
-    return res.status(400).send('Expecting request body to contain property `text`.');
+  if (req.body.text === undefined || typeof req.body.text !== 'string' || req.body.text === '') {
+    return res.status(400).send('Expecting request body to contain property `text` with a string value.');
   }
 
-  var text = req.body.text.trim();
+  var args = req.body.text.trim().split(':');
 
-  var textSplit = text.split(':');
-  if (textSplit.length !== 3) {
-    return res.type(TEXT).send(USAGE);
-  }
-
-  var prTeamSize = parseInt(textSplit[0], 10);
-  if (Number.isNaN(prTeamSize)) {
-    return res.type(TEXT).send(USAGE);
-  }
-  if (prTeamSize < 1) {
-    return res.type(TEXT).send('PR team size must be at least 1.');
-  }
-
-  var minOutsiders = parseInt(textSplit[1], 10);
-  if (Number.isNaN(minOutsiders)) {
-    return res.type(TEXT).send(USAGE);
-  }
-  if (minOutsiders < 0) {
-    return res.type(TEXT).send('Min outsiders must be at least 0.');
-  }
-
-  if (minOutsiders > prTeamSize) {
-    return res.type(TEXT).send('Min outsiders must be no more than PR team size.');
-  }
-
-  var devTeams = textSplit[2].split(';').map(function (devTeamStr) {
+  var devTeams = args[0].split(';').map(function (devTeamStr) {
     return devTeamStr.split(',');
   });
+
+  var prTeamSize = DEFAULT_PR_TEAM_SIZE;
+  if (args.length > 1) {
+    prTeamSize = parseInt(args[1], 10);
+    if (Number.isNaN(prTeamSize)) {
+      return res.type(TEXT).send(USAGE);
+    }
+    if (prTeamSize < 1) {
+      return res.type(TEXT).send('PR team size must be at least 1.');
+    }
+  }
+
+  var minOutsiders = DEAFAULT_MIN_OUTSIDERS;
+  if (args.length > 2) {
+    minOutsiders = parseInt(args[2], 10);
+    if (Number.isNaN(minOutsiders)) {
+      return res.type(TEXT).send(USAGE);
+    }
+    if (minOutsiders < 0) {
+      return res.type(TEXT).send('Min outsiders must be at least 0.');
+    }
+    if (minOutsiders > prTeamSize) {
+      return res.type(TEXT).send('Min outsiders must be no more than PR team size.');
+    }
+  }
 
   res.send(prTeams.generatePrTeams(devTeams, prTeamSize, minOutsiders));
 });
