@@ -1,37 +1,44 @@
 # pr-teams
 
+A pull request review team generator.
+
 ## API
 
 ### POST /generate-teams
 
-This service is intended for custom Slack "slash integration" and generates PR review teams with the following constraints:
+This service is intended for custom Slack "slash integration" and generates PR review teams with the following
+constraints:
 
 - PR teams will consist of exactly the same number of developers.
-- Each dev will be be a reviewer for exactly the same number of authors (PR team size minus one).
+- Each developer will be be a reviewer for exactly the same number of authors (PR team size minus one).
 - PR teams will attempt to include of all dev teammates, limited by a configurable "outsider" constraint.
-- A minium number of devs from outside a dev team will be on each PR team for "cross-pollination", unless there are insufficient outsiders.
-- Outsider devs are weighted to cross-pollinate on a team-by-team basis; e.g., it's more
-  likely that dev team 2 will audit dev team 1 than a combination of dev teams 2 - 3 will audit
-  dev team 1.
-- The result should be effectively random in order to facilitate an even distribution over time of developer exposure to each other's code.
+- A minium number of developers from outside a dev team, "outsiders", will be on each PR team for cross-pollination,
+  unless there are insufficient outsiders.
+- Outsiders are determined on a team-weighted basis; e.g., it's more likely that all of dev team 2 will review authors
+  from dev team 1 than a distrubtion of reviewers from dev teams 2 and 3.
+- The result should be effectively random in order to facilitate an even distribution over time of dev team exposure
+  to other dev team's code.
 
 #### Request body
 
 ```json
 {
-  "text": "<Arguments>"
+  "text": "{PR teams}:{PR team size}:{Min outsiders}"
 }
 ```
 
-##### Arguments
+##### `PR teams`
 
-```
-<dev>[,<dev>]*[;<dev>[,<dev>]*]:<PR team size>:<Min outsiders>
-```
+Formatted `{dev},...,{dev}[;{dev},...,{dev}]*` where `dev` is a developer's name and each semicolon-separated group
+of comma-separated developers is a dev team.
 
-* `PR team size` Optional: Defaults to 4. Total size of the PR review team, including the author.
-* `Min outsiders` Optional: Defaults to 1. The minimum number of reviewers from outsdie the author's dev team that should be reviewers, if available.
-* `dev` A developer's name. Each semicolon-separated group of comma-separated devs is a dev team.
+##### `PR team size` (Optional; defaults to 4)
+
+Total size of the PR review team, including the author.
+
+##### `Min outsiders` (Optional; defaults to 1)
+
+The minimum number of reviewers from outside the author's dev team that should be reviewers, if available.
 
 #### Example
 
@@ -39,7 +46,7 @@ The following request:
 
 ```
 {
-  "text": "4:1:brett,stef,steve;ian,max;zach,josh"
+  "text": "brett,stef,steve;ian,max;zach,josh:4:1"
 }
 ```
 
