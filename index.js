@@ -25,7 +25,7 @@ app.get('/', function (req, res) {
   res.send(DOCUMENTATION_LINK);
 });
 
-app.get('/pr-teams', function (req, res) {
+app.get('/slack-pr-teams', function (req, res) {
   if (!req.query.text) {
     return res.status(400).send('Expecting request parameter `text`.');
   }
@@ -61,7 +61,23 @@ app.get('/pr-teams', function (req, res) {
     }
   }
 
-  res.send(prTeams.generatePrTeams(devTeams, prTeamSize, minOutsiders));
+  var prTeamsString;
+  try {
+    prTeamsString = prTeams.generatePrTeamsString(devTeams, prTeamSize, minOutsiders);
+  } catch (error) {
+    if (error instanceof prTeams.PrTeamsError) {
+      return res.json({
+        "response_type": "ephemeral",
+        text: error.message,
+      });
+    }
+    throw error;
+  }
+
+  res.json({
+    "response_type": "in_channel",
+    text: prTeamsString,
+  });
 });
 
 app.listen(app.get('port'), function () {
