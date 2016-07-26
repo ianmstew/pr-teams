@@ -1,12 +1,12 @@
 # pr-teams
 
-A pull request review team generator.
+A pull request review team generator compatible with Slack.
 
 ## API
 
-### POST /generate-teams
+### GET /pr-teams
 
-This service is intended for custom Slack "slash integration" and generates PR review teams with the following
+This service is compatible with custom Slack slash-command integration and generates PR review teams with the following
 constraints:
 
 - PR teams will consist of exactly the same number of developers.
@@ -19,12 +19,10 @@ constraints:
 - The result should be effectively random in order to facilitate an even distribution over time of dev team exposure
   to other dev team's code.
 
-#### Request body
+#### Request Parameters
 
-```json
-{
-  "text": "{PR teams}:{PR team size}:{Min outsiders}"
-}
+```
+text={PR teams}:{PR team size}:{Min outsiders}
 ```
 
 ##### `PR teams`
@@ -45,9 +43,7 @@ The minimum number of reviewers from outside the author's dev team that should b
 The following request:
 
 ```
-{
-  "text": "brett,stef,steve;ian,max;zach,josh:4:1"
-}
+/pr-teams?text=brett,stef,steve;ian,max;zach,josh:4:1
 ```
 
 could conceivably produce:

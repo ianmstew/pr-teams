@@ -1,5 +1,4 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var prTeams = require('./lib/pr-teams');
 var app = express();
 
@@ -16,7 +15,6 @@ var DEAFAULT_MIN_OUTSIDERS = 1;
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());
 
 var USAGE =
   'Arguments: <PR team size>:<Min outsiders>:<dev>[,<dev>]*[;<dev>[,<dev>]]\n' +
@@ -27,16 +25,12 @@ app.get('/', function (req, res) {
   res.send(DOCUMENTATION_LINK);
 });
 
-app.get('/generate-teams', function (req, res) {
-  res.send(DOCUMENTATION_LINK);
-});
-
-app.post('/generate-teams', function (req, res) {
-  if (req.body.text === undefined || typeof req.body.text !== 'string' || req.body.text === '') {
-    return res.status(400).send('Expecting request body to contain property `text` with a string value.');
+app.get('/pr-teams', function (req, res) {
+  if (!req.query.text) {
+    return res.status(400).send('Expecting request parameter `text`.');
   }
 
-  var args = req.body.text.trim().split(':');
+  var args = req.query.text.trim().split(':');
 
   var devTeams = args[0].split(';').map(function (devTeamStr) {
     return devTeamStr.split(',');

@@ -4,7 +4,6 @@
   "description": "Web service to generate pull request reviewer teams",
   "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.15.2",
     "express": "^4.14.0"
   },
   "devDependencies": {},
